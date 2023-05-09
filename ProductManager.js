@@ -1,4 +1,5 @@
-const fs = require("fs");
+//const fs = require("fs");
+import fs from "fs";
 
 class ProductManager {
   constructor() {
@@ -57,12 +58,12 @@ class ProductManager {
     for (let index = 0; index < this.products.length; index++) {
       if (this.products[index].id == id) {
         return this.products[index];
-        prodexist = 1;
       }
     }
     if (prodexist === 0) {
       let message = `El producto con ID: ${id} no existe`;
-      return message;
+      let exists = 0;
+      return prodexist;
     }
   }
 
@@ -110,6 +111,7 @@ class ProductManager {
 
 const product = new ProductManager("./files/products.json");
 
+export { product, ProductManager };
 // product.addProduct("Manzana", "Manzana Roja", 480, "imagen1", "FRU001", 20);
 // product.addProduct("Banana", "Banana Ecuador", 380, "imagen2", "FRU002", 40);
 // product.addProduct("Pera", "Pera Williams", 380, "imagen3", "FRU003", 50);
@@ -118,7 +120,7 @@ const product = new ProductManager("./files/products.json");
 //product.addProduct("", "Kiwi Chile", -380, "imagen4", "FRU0011", 10);
 //product.addProduct("Frutilla", "Frutilla Coronda", 380, "imagen4", "FRU001", 10);
 
-console.log(product.getProducts());
+//console.log(product.getProducts());
 
 // Agregamos un producto que se repite el código, por lo tanto no lo agrega
 //product.addProduct("Dátiles", "Dátiles Frasco", 2080, "imagen5", "FRU003", 10);
@@ -136,7 +138,7 @@ console.log(product.getProducts());
 //console.log(product.getProducts());
 
 // Modificamos un elemento
-product.updateProduct(
+/* product.updateProduct(
   3,
   "Pera",
   "Pera Williams",
@@ -155,3 +157,4 @@ product.updateProduct(
   "FRU006",
   501
 );
+*/
