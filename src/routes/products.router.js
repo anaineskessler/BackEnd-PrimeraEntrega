@@ -11,7 +11,8 @@ productRouter.get("/", (req, res) => {
 //Muestro solo el Producto por ID
 productRouter.get("/:pid", (req, res) => {
   //dentro de req.params vienen lo que mando por la url
-  const id = req.params.pid;
+
+  let id = parseInt(req.params.pid);
 
   //res.send(`Buscamos el producto ${id}`);
   console.log(`Buscamos el producto ${id}`);
@@ -66,16 +67,29 @@ productRouter.post("/", (req, res) => {
 });
 
 productRouter.put("/:id", (req, res) => {
-  const id = req.params.id;
+  let id = parseInt(req.params.id);
   console.log(id);
-  const producto = req.body;
-  producto.id = id;
-  console.log(producto);
-  const indiceEncontrado = products.updateProduct(producto);
-  products[indiceEncontrado] = {
-    id: products[indiceEncontrado].id,
-    ...producto,
-  };
+  console.log(products);
+  let ntitle = req.body.title;
+  let ndescription = req.body.description;
+  let ncode = req.body.code;
+  let nprice = req.body.price;
+  let nthumbnail = req.body.thumbnail;
+  let nstock = req.body.stock;
+  console.log("!!!", ndescription);
+  const indiceEncontrado = products.updateProduct(
+    id,
+    ntitle,
+    ndescription,
+    nprice,
+    nthumbnail,
+    ncode,
+    nstock
+  );
+  // products[indiceEncontrado] = {
+  //   id: products[indiceEncontrado].id,
+  //   ...producto,
+  // };
   return res.status(200).json({
     status: "success",
     msg: "producto modificado",

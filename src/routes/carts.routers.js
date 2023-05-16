@@ -45,31 +45,25 @@ cartRouter.post("/", (req, res) => {
 // agregar carrito y producto en él /:cid/product/:pid
 
 cartRouter.post("/:cid/product/:pid", async (req, res) => {
-  try {
-    const cartId = parseInt(req.params.cid);
-    const productId = parseInt(req.params.pid);
+  const cartId = parseInt(req.params.cid);
+  const productId = parseInt(req.params.pid);
 
-    // Verificar si el carrito existe
-    const cart = CartManager.getCartById(cartId);
-    if (!cart) {
-      return res
-        .status(404)
-        .json({ message: `Carrito ${cartId} no encontrado` });
-    }
-
-    // Verificar si el producto existe
-    const product = CartManager.getProductById(productId);
-    if (!product) {
-      return res
-        .status(404)
-        .json({ message: `Producto ${productId} no encontrado` });
-    }
-
-    CartManager.addProductToCart(cartId, productId);
-    res.json({
-      message: `Producto ${productId} agregado al carrito ${cartId}`,
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  // Verificar si el carrito existe
+  const cart = carro.getCartById(cartId);
+  if (!cart) {
+    return res.status(404).json({ message: `Carrito ${cartId} no encontrado` });
   }
+
+  // Verificar si el producto existe
+  const product = product.getProductById(productId);
+  if (!product) {
+    return res
+      .status(404)
+      .json({ message: `Producto ${productId} no encontrado` });
+  }
+
+  CartManager.addProductToCart(cartId, productId);
+  res.json({
+    message: `Producto ${productId} agregado al carrito ${cartId}`,
+  });
 });

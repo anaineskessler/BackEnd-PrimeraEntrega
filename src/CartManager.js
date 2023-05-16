@@ -13,10 +13,16 @@ class CartManager {
     return this.carts;
   }
 
-  addCart(cartId, productId) {
-    console.log(this.carts);
-    const cart = this.carts.find((carts) => cart.id === cartId);
-    console.log(cart);
+  addCart() {
+    let cart = new CartManager();
+
+    console.log(`Se cargo el carrito`);
+    const cartsString = JSON.stringify(this.cart);
+    fs.writeFileSync("./files/carts.json", cartsString);
+  }
+
+  addCartProd(cartId, productId) {
+    const cart = this.carts.getCartById(cartId);
     const existingProduct = cart.products.find(
       (product) => product.id === productId
     );
@@ -28,7 +34,6 @@ class CartManager {
       if (!product) {
         return;
       }
-
       cart.products.push({
         id: product.id,
         quantity: 1,
@@ -51,16 +56,24 @@ class CartManager {
 
   getCartById(id) {
     let cartexist = 0;
-    for (let index = 0; index < this.carts.length; index++) {
-      if (this.carts[index].id == id) {
-        return this.carts[index];
+    console.log(carro, carro.id);
+    this.carro.forEach((element) => {
+      if (element.id == id) {
+        cartexist = 1;
+        return this.carro.id;
       }
-    }
-    if (cartexist === 0) {
-      let message = `El carrito con ID: ${id} no existe`;
-      let exists = 0;
-      return cartexist;
-    }
+      if (cartexist === 0) {
+        let message = `El carrito con ID: ${id} no existe`;
+        let exists = 0;
+        return;
+      }
+    });
+
+    // for (let index = 0; index < this.carro.lengh; index++) {
+    //   if (this.carts[index].id == id) {
+    //     return this.carts[index];
+    //   }
+    // }
   }
 }
 
