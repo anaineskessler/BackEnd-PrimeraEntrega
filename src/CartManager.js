@@ -2,8 +2,8 @@ import fs from "fs";
 
 class CartManager {
   constructor() {
-    //this.path = path;
-    this.carts = [];
+    this.id = Date.now();
+    this.products = [];
     const cartsString = fs.readFileSync("./files/carts.json", "utf-8");
     const carts = JSON.parse(cartsString);
   }
@@ -13,16 +13,10 @@ class CartManager {
     return this.carts;
   }
 
-  generateCartID() {
-    const cart = this.carts.find((cart) => cart.id === id);
-    if (cart) {
-      return cart;
-    }
-  }
-
   addCart(cartId, productId) {
-    const cart = this.carts.find((cart) => cart.id === cartId);
-
+    console.log(this.carts);
+    const cart = this.carts.find((carts) => cart.id === cartId);
+    console.log(cart);
     const existingProduct = cart.products.find(
       (product) => product.id === productId
     );
@@ -30,7 +24,7 @@ class CartManager {
     if (existingProduct) {
       existingProduct.quantity++;
     } else {
-      const product = this.getProductById(productId);
+      const product = this.products.getProductById(productId);
       if (!product) {
         return;
       }
@@ -65,11 +59,11 @@ class CartManager {
     if (cartexist === 0) {
       let message = `El carrito con ID: ${id} no existe`;
       let exists = 0;
-      return prodexist;
+      return cartexist;
     }
   }
 }
 
-const carts = new CartManager("./files/carts.json");
+const carro = new CartManager("./files/carts.json");
 
-export { carts, CartManager };
+export { carro, CartManager };

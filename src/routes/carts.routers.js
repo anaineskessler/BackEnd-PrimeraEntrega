@@ -1,10 +1,10 @@
 import express from "express";
-import { carts } from "../CartManager.js";
+import { carro } from "../CartManager.js";
 export const cartRouter = express.Router();
 
 cartRouter.get("/", (req, res) => {
-  console.log(carts);
-  res.json(carts);
+  console.log(carro);
+  res.json(carro);
 });
 
 //Muestro solo el Carrito por ID
@@ -15,7 +15,7 @@ cartRouter.get("/:pid", (req, res) => {
   //res.send(`Buscamos el producto ${id}`);
   console.log(`Buscamos el Carrito ${id}`);
 
-  const carritoEncontrado = carts.getProductById(id);
+  const carritoEncontrado = carts.getCartById(id);
 
   if (carritoEncontrado !== 0) {
     console.log(carritoEncontrado);
@@ -36,8 +36,7 @@ cartRouter.get("/:pid", (req, res) => {
 cartRouter.post("/", (req, res) => {
   const carrito = req.body;
   console.log(carrito);
-  carrito.id = carts.generateCartID();
-  carts.addCart(carrito);
+  carro.addCart(carrito.id, 1);
   return res
     .status(201)
     .json({ status: "success", msg: "carrito creado", data: carrito });
@@ -45,7 +44,7 @@ cartRouter.post("/", (req, res) => {
 
 // agregar carrito y producto en él /:cid/product/:pid
 
-cartsRouter.post("/:cid/product/:pid", async (req, res) => {
+cartRouter.post("/:cid/product/:pid", async (req, res) => {
   try {
     const cartId = parseInt(req.params.cid);
     const productId = parseInt(req.params.pid);
