@@ -4,7 +4,8 @@ class CartManager {
   constructor() {
     this.id = Date.now();
     this.products = [];
-    const cartsString = fs.readFileSync("./files/carts.json", "utf-8");
+    this.path = "./files/carts.json";
+    const cartsString = fs.readFileSync(this.path, "utf-8");
     const carts = JSON.parse(cartsString);
   }
 
@@ -13,12 +14,31 @@ class CartManager {
     return this.carts;
   }
 
-  addCart() {
-    let cart = new CartManager();
+  generateId = () => {
+    if (!fs.existsSync(this.path)) return 1;
+    this.products = JSON.parse(fs.readFileSync(this.path, "utf-8"));
+    let id = this.products[this.products.length - 1].id + 1;
+    return id;
+  };
 
+  saveFile = async (cart) => {
+    let code = 0;
+    if (!fs.existsSync(this.path)) {
+      fs.writeFileSync(this.path, JSON.stringify([], null, "\t"));
+    }
+    const data = await this.getCarritos();
+    data.push(cart);
+    fs.writeFileSync(this.path, JSON.stringify(data, null, "\t"));
+    code = 201;
+    return code;
+  };
+
+  addCart() {
+    id = this.generateId();
+    let cart = { id, products: [] };
+    codigo = this.saveFile(cart);
     console.log(`Se cargo el carrito`);
-    const cartsString = JSON.stringify(this.cart);
-    fs.writeFileSync("./files/carts.json", cartsString);
+    return codigo;
   }
 
   addCartProd(cartId, productId) {
@@ -45,15 +65,6 @@ class CartManager {
     console.log(`Producto ${productId} agregado al carrito ${cartId}`);
   }
 
-  // const cartId = this.generateCartID();
-  // const newCart = { id: cartId, products: [] };
-  // const carts = this.getCarts();
-  // console.log(carts);
-  // carts.push(newCart);
-  // const cartsString = JSON.stringify(this.carts);
-  // fs.writeFileSync("./files/carts.json", cartsString);
-  // return newCart;
-
   getCartById(id) {
     let cartexist = 0;
     console.log(carro, carro.id);
@@ -68,12 +79,6 @@ class CartManager {
         return;
       }
     });
-
-    // for (let index = 0; index < this.carro.lengh; index++) {
-    //   if (this.carts[index].id == id) {
-    //     return this.carts[index];
-    //   }
-    // }
   }
 }
 

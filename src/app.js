@@ -1,29 +1,64 @@
 import express from "express";
-import { ProductManager } from "./ProductManager.js";
-import { productRouter } from "./routes/products.router.js";
-import { CartManager } from "./CartManager.js";
-import { cartRouter } from "./routes/carts.routers.js";
+import __dirname from "./utils.js";
+import handlebars from "express-handlebars";
+import productsRouter from "./routers/products.router.js";
+import cartsRouter from "./routers/carts.router.js";
+import viewsRouter from "./routers/views.router.js";
+import { Server } from "socket.io";
+import { manager } from "./manager/productManager.js";
 
 const app = express();
-const PORT = 8080;
+app.use(express.json());
 
-app.use(express.urlencoded({ extended: true }));
+const httpServer = app.listen(8080, () =>
+  console.log("Servidor escuchando en el puerto 8080")
+);
 
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`);
-});
+const io = new Server(httpServer);
 
-const productManager = new ProductManager();
-const products = productManager.getProducts();
+app.engine("handlebars", handlebars.engine());
+app.set("views", __dirname + "/views");
+app.set("view engine", "handlebars");
 
-// coloco el router y la ruta fija /products y /carts
-app.use("/products", productRouter);
-app.use("/carts", cartRouter);
+app.use(express.static(__dirname + "/public"));
 
-//Chequeo Servidor corriendo en puerto 8080
-app.get("/", (req, res) => {
-  res.json({
-    message: `Hola a todos ahora estamos en el Desafío 3 en el puerto ${PORT}`,
-    Products: products,
+app.use("/", viewsRouter);
+app.use("/api/products/", productsRouter);
+app.use("/api/carts/", cartsRouter);
+
+io.on("connection", (socket) => {
+  console.log("Nuevo cliente conectado!");
+  manager.getProductos().then((data) => {
+    if (data) {
+      io.emit("resp-new-product", data);
+    }
+  });
+  socket.on("new-product", (data) => {
+    manager.addProduct(data).then((data) => {
+      if (data == "406b") {
+        socket.emit("resp-new-product", "El producto ya existe");
+      } else if (data == "406a") {
+        socket.emit("resp-new-product", "Todos los campos son obligatorios");
+      } else {
+        manager.getProductos().then((data) => {
+          if (data) {
+            io.emit("resp-new-product", data);
+          }
+        });
+      }
+    });
+  });
+  socket.on("delete-product", (id) => {
+    manager.deleteProducto(parseInt(id)).then((data) => {
+      if (data == 406) {
+        socket.emit("resp-delete-product", "El producto no existe");
+      } else {
+        manager.getProductos().then((data) => {
+          if (data) {
+            io.emit("resp-delete-product", data);
+          }
+        });
+      }
+    });
   });
 });
